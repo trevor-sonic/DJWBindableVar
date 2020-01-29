@@ -10,9 +10,9 @@ import Foundation
 
 
 /// Dynamic Bindable Variable
-class DVar<T>{
-    typealias VarHandler    = (T) -> ()
-    typealias BasicHandler  = () -> ()
+open class DVar<T>{
+    public typealias VarHandler    = (T) -> ()
+    
     
     /// Listener handler
     private var listener: VarHandler?
@@ -20,7 +20,7 @@ class DVar<T>{
     private var _value: T
     // MARK: - Init
     /// Initialiser of the dynamic variable
-    init(_ value: T) { self._value = value }
+    public init(_ value: T) { self._value = value }
     
     /// Value of the bond variable.
     public var value: T {
