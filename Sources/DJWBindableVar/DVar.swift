@@ -18,13 +18,19 @@ open class DVar<T>{
     private var listener: VarHandler?
     private var listeners = [String: VarHandler]()
     private var _value: T
+    
+    /// onlyWhenChange is not working yet
+    //private var onlyWhenChange = false
     // MARK: - Init
     /// Initialiser of the dynamic variable
-    public init(_ value: T) { self._value = value }
+    public init (_ value: T) { self._value = value }
     
     /// Value of the bond variable.
     public var value: T {
         set {
+            
+            //if  onlyWhenChange && self._value == newValue {return}
+            
             self._value = newValue
             if listener != nil{
                 notify()
@@ -37,7 +43,7 @@ open class DVar<T>{
         }
     }
     /// Set without sending any notification
-    func silentSet(_ value:T){
+    public func silentSet(_ value:T){
         self._value = value
     }
     
@@ -73,6 +79,7 @@ open class DVar<T>{
     
     /// Multi: Set +  Bind with ID with wich you can unbind.
     public func multiBindAndSet(_ listener: VarHandler?, id:String) {
+        //self.onlyWhenChange = onlyWhenChange
         listeners[id] = listener
         notifyBound(id: id)
         #if DEBUG
