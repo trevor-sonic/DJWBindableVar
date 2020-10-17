@@ -82,9 +82,9 @@ open class DVar<T>{
         //self.onlyWhenChange = onlyWhenChange
         listeners[id] = listener
         notifyBound(id: id)
-        #if DEBUG
+//        #if DEBUG
         //print("New multi bind:\(multiBondDetails)")
-        #endif
+//        #endif
     }
     /// Multi: Bind with ID with wich you can unbind.
     public func multiBind(_ listener: VarHandler?, id:String) {
