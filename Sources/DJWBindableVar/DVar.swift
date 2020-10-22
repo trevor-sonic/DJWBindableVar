@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 /// Dynamic Bindable Variable
 open class DVar<T>{
     public typealias VarHandler    = (T) -> ()
@@ -28,9 +27,7 @@ open class DVar<T>{
     /// Value of the bond variable.
     public var value: T {
         set {
-            
             //if  onlyWhenChange && self._value == newValue {return}
-            
             self._value = newValue
             if listener != nil{
                 notify()
