@@ -14,6 +14,8 @@ open class BVar<T:Equatable>{
     /// Listener handler
     private var listenerRemote: VarHandler?
     private var listenerLocal: VarHandler?
+    private var listenerDB: VarHandler?
+    private var listenerSide: VarHandler?
     private var _value: T
     
 
@@ -28,6 +30,8 @@ open class BVar<T:Equatable>{
     public func reset(){
         listenerRemote = nil
         listenerLocal = nil
+        listenerDB = nil
+        listenerSide = nil
     }
     
     // MARK: - Set
@@ -38,6 +42,8 @@ open class BVar<T:Equatable>{
                 self._value = newValue
                 listenerLocal?(value)
                 listenerRemote?(value)
+                listenerDB?(value)
+                listenerSide?(value)
             }
         }
         get{
@@ -51,7 +57,9 @@ open class BVar<T:Equatable>{
     
     // MARK: - Remote
     /// Single: Bind the variable and notify for the updates
-    public func bind(_ listener: VarHandler?) { self.listenerRemote = listener }
+    public func bind(_ listener: VarHandler?) {
+        self.listenerRemote = listener
+    }
     
     /// Bind remote
     /// Single: Set + Bind the variable and notify for the updates
@@ -65,6 +73,29 @@ open class BVar<T:Equatable>{
     /// use this for the sender object to receive value back
     public func bindLocal(_ listener: VarHandler?) {
         self.listenerLocal = listener
+    }
+    
+    // MARK: - Database
+    /// Database sync binder
+    public func bindDB(_ listener: VarHandler?) {
+        self.listenerDB = listener
+    }
+    
+    // MARK: - Side
+    /// Side sync binder, for any other paralel bindable object such 2nd UI
+    public func bindSide(_ listener: VarHandler?) {
+        self.listenerSide = listener
+    }
+    
+    // MARK: - Bidirectional binding
+    public func bBindSide(_ bvar:BVar<T>) {
+        
+        bvar.bind { val in
+            self.value = val
+        }
+        bindSide { val in
+            bvar.value = val
+        }
     }
     
     
