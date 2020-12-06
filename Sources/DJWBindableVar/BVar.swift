@@ -80,23 +80,30 @@ open class BVar<T:Equatable>{
     public func bindDB(_ listener: VarHandler?) {
         self.listenerDB = listener
     }
+    /// Database sync binder
+    public func bindDBAndSet(_ listener: VarHandler?) {
+        self.listenerDB = listener
+        listener?(value)
+    }
     
     // MARK: - Side
     /// Side sync binder, for any other paralel bindable object such 2nd UI
     public func bindSide(_ listener: VarHandler?) {
         self.listenerSide = listener
     }
+    public func bindSideAndSet(_ listener: VarHandler?) {
+        self.listenerSide = listener
+        listener?(value)
+    }
     
     // MARK: - Bidirectional binding
     public func bBindSide(_ bvar:BVar<T>) {
         
-        bvar.bind { val in
-            self.value = val
+        bvar.bind { [weak self] val in
+            self?.value = val
         }
         bindSide { val in
             bvar.value = val
         }
     }
-    
-    
 }
