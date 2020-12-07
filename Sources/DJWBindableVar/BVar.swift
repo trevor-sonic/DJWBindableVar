@@ -15,7 +15,7 @@ open class BVar<T:Equatable>{
     private var listenerRemote: VarHandler?
     private var listenerLocal: VarHandler?
     private var listenerDB: VarHandler?
-    private var listenerSide: VarHandler?
+    private var listenerExtend: VarHandler?
     private var _value: T
     
 
@@ -31,7 +31,7 @@ open class BVar<T:Equatable>{
         listenerRemote = nil
         listenerLocal = nil
         listenerDB = nil
-        listenerSide = nil
+        listenerExtend = nil
     }
     
     // MARK: - Set
@@ -43,7 +43,7 @@ open class BVar<T:Equatable>{
                 listenerLocal?(value)
                 listenerRemote?(value)
                 listenerDB?(value)
-                listenerSide?(value)
+                listenerExtend?(value)
             }
         }
         get{
@@ -90,23 +90,32 @@ open class BVar<T:Equatable>{
         listener?(value)
     }
     
-    // MARK: - Side
-    /// Side sync binder, for any other paralel bindable object such 2nd UI
-    public func bindSide(_ listener: VarHandler?) {
-        self.listenerSide = listener
+    // MARK: - Extend
+    /// Extend sync binder, for any other paralel bindable object such 2nd UI
+    public func bindExtend(_ listener: VarHandler?) {
+        self.listenerExtend = listener
     }
-    public func bindSideAndSet(_ listener: VarHandler?) {
-        self.listenerSide = listener
+    public func bindExtendAndSet(_ listener: VarHandler?) {
+        self.listenerExtend = listener
         listener?(value)
     }
     
     // MARK: - Bidirectional binding
-    public func bBindSide(_ bvar:BVar<T>) {
+    public func bBindExtend(_ bvar:BVar<T>) {
         
         bvar.bind { [weak self] val in
             self?.value = val
         }
-        bindSide { val in
+        bindExtend { val in
+            bvar.value = val
+        }
+    }
+    public func bBindExtendAndSet(to bvar:BVar<T>) {
+        
+        bvar.bind { [weak self] val in
+            self?.value = val
+        }
+        bindExtendAndSet { val in
             bvar.value = val
         }
     }
