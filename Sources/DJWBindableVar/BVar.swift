@@ -74,6 +74,10 @@ open class BVar<T:Equatable>{
     public func bindLocal(_ listener: VarHandler?) {
         self.listenerLocal = listener
     }
+    public func bindLocalAndSet(_ listener: VarHandler?) {
+        self.listenerLocal = listener
+        listener?(value)
+    }
     
     // MARK: - Database
     /// Database sync binder
