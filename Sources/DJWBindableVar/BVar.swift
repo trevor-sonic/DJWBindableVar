@@ -33,7 +33,18 @@ open class BVar<T:Equatable>{
         listenerDB = nil
         listenerExtend = nil
     }
-    
+    public func unbindDB(){
+        listenerDB = nil
+    }
+    public func unbindExtend(){
+        listenerExtend = nil
+    }
+    public func unbindLocal(){
+        listenerLocal = nil
+    }
+    public func unbindRemote(){
+        listenerRemote = nil
+    }
     // MARK: - Set
     /// Value of the bond variable.
     public var value: T {
