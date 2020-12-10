@@ -114,31 +114,31 @@ open class BVar<T:Equatable>{
     // MARK: - Bidirectional binding
     public func bBindExtend(to bvar:BVar<T>) {
         
-        bvar.bind { [weak self] val in
-            self?.value = val
+        bvar.bind { [weak self] value in
+            self?.value = value
         }
-        bindExtend { val in
-            bvar.silentSet(val)
+        bindExtend { value in
+            bvar.value = value
         }
     }
     public func bBindExtendAndSet(to bvar:BVar<T>) {
         
-        bvar.bind { [weak self] val in
-            self?.value = val
+        bvar.bind { [weak self] value in
+            self?.value = value
         }
-        bindExtendAndSet { val in
-            bvar.silentSet(val)
+        bindExtendAndSet { value in
+            bvar.value = value
         }
     }
     
     // MARK: - Bidirectional binding
     public func bBindDB(to bvar:BVar<T>) {
         
-        bvar.bind { [weak self] val in
-            self?.value = val
+        bvar.bind { [weak self] value in
+            self?.value = value
         }
-        bindDB { val in
-            bvar.value = val
+        bindDB { value in
+            bvar.value = value
         }
     }
 }
