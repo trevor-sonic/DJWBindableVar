@@ -53,8 +53,8 @@ open class BVar<T:Equatable>{
                 self._value = newValue
                 listenerLocal?(value)
                 listenerRemote?(value)
-                listenerDB?(value)
                 listenerExtend?(value)
+                listenerDB?(value)
             }
         }
         get{
