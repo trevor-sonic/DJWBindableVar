@@ -118,7 +118,7 @@ open class BVar<T:Equatable>{
             self?.value = val
         }
         bindExtend { val in
-            bvar.value = val
+            bvar.silentSet(val)
         }
     }
     public func bBindExtendAndSet(to bvar:BVar<T>) {
@@ -127,7 +127,7 @@ open class BVar<T:Equatable>{
             self?.value = val
         }
         bindExtendAndSet { val in
-            bvar.value = val
+            bvar.silentSet(val)
         }
     }
     
