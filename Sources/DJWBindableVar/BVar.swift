@@ -16,6 +16,7 @@ open class BVar<T:Equatable>{
     private var listenerLocal: VarHandler?
     private var listenerDB: VarHandler?
     private var listenerExtend: VarHandler?
+    private var listenerSlave: VarHandler?
     private var _value: T
     
 
@@ -32,12 +33,16 @@ open class BVar<T:Equatable>{
         listenerLocal = nil
         listenerDB = nil
         listenerExtend = nil
+        listenerSlave = nil
     }
     public func unbindDB(){
         listenerDB = nil
     }
     public func unbindExtend(){
         listenerExtend = nil
+    }
+    public func unbindSlave(){
+        listenerSlave = nil
     }
     public func unbindLocal(){
         listenerLocal = nil
@@ -54,6 +59,7 @@ open class BVar<T:Equatable>{
                 listenerLocal?(value)
                 listenerRemote?(value)
                 listenerExtend?(value)
+                listenerSlave?(value)
                 listenerDB?(value)
             }
         }
@@ -111,6 +117,16 @@ open class BVar<T:Equatable>{
         listener?(value)
     }
     
+    // MARK: - Slave
+    /// Extend sync binder, for any other paralel bindable object such 3nd UI
+    public func bindSlave(_ listener: VarHandler?) {
+        self.listenerSlave = listener
+    }
+    public func bindSlaveAndSet(_ listener: VarHandler?) {
+        self.listenerSlave = listener
+        listener?(value)
+    }
+    
     // MARK: - Bidirectional binding
     public func bBindExtend(to bvar:BVar<T>) {
         
@@ -138,6 +154,26 @@ open class BVar<T:Equatable>{
             self?.value = value
         }
         bindDB { value in
+            bvar.value = value
+        }
+    }
+    
+    // MARK: - Bidirectional binding
+    public func bBindSlave(to bvar:BVar<T>) {
+        
+        bvar.bind { [weak self] value in
+            self?.value = value
+        }
+        bindSlave { value in
+            bvar.value = value
+        }
+    }
+    public func bBindSlaveAndSet(to bvar:BVar<T>) {
+
+        bvar.bind { [weak self] value in
+            self?.value = value
+        }
+        bindSlaveAndSet { value in
             bvar.value = value
         }
     }
