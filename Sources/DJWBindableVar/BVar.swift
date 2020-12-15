@@ -55,20 +55,20 @@ open class BVar<T:Equatable>{
     private var listeners:[Branch:VarHandler?] = [:]
     
     // MARK: -  New version with enum
-    public func bind( _ bindTo:Branch, andSet:Bool, _ listener: VarHandler? ) {
-        listeners[bindTo] = listener
+    public func bind( _ branch:Branch, andSet:Bool, _ listener: VarHandler? ) {
+        listeners[branch] = listener
         if andSet { listener?(value) }
     }
 
     // MARK: - Bidirectional binding with enum
     /// Just binding is not making difference but bindAndSet need some care cause one is setting the other
     /// while binding so one must be master other slave
-    public func bBind( _ bindTo:Branch, andSet:Bool, to bvar:BVar<T>, toBranch:Branch = .master) {
+    public func bBind( _ branch:Branch, andSet:Bool, to bvar:BVar<T>, toBranch:Branch = .master) {
         
         bvar.bind(toBranch, andSet: false) { [weak self] value in
             self?.value = value
         }
-        bind(bindTo, andSet: andSet) { value in
+        bind(branch, andSet: andSet) { value in
             bvar.value = value
         }
     }
@@ -90,8 +90,10 @@ open class BVar<T:Equatable>{
         }
         listeners.removeAll()
     }
-    public func unbind(_ bindTo:Branch){
-        listeners.removeValue(forKey: bindTo)
+    public func unbind(_ branch:Branch){
+        listeners[branch] = nil
+        listeners.removeValue(forKey: branch)
+        
     }
     // MARK: - Set
     /// Value of the bond variable.
