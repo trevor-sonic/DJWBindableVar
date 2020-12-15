@@ -7,9 +7,35 @@
 
 import Foundation
 
+class Tester{
+    func bla(){
+        
+
+        // MARK: - Bindable example with enum
+        let bv2:BVar<Int> = BVar(0)
+        
+        bv2.bindAndSet(.ui) { value in
+            print(value)
+        }
+        
+        
+        
+    }
+}
 /// Dynamic Bindable Variable
 open class BVar<T:Equatable>{
+    
     public typealias VarHandler    = (T) -> ()
+    
+    public enum Branch{
+        case main
+        case ui
+        case ui2
+        case db
+        case slave
+    }
+    
+    
     
     /// Listener handler
     private var listenerRemote: VarHandler?
@@ -20,6 +46,39 @@ open class BVar<T:Equatable>{
     private var _value: T
     
 
+    private var listeners:[Branch:VarHandler?] = [:]
+    
+    // MARK: -  new with enum
+    public func bind( _ bindTo:Branch, listener: VarHandler? ) {
+        listeners[bindTo] = listener
+    }
+    public func bindAndSet( _ bindTo:Branch, listener: VarHandler? ) {
+        listeners[bindTo] = listener
+        listener?(value)
+    }
+    // MARK: - Bidirectional binding with enum
+    public func bBind( _ bindTo:Branch, to bvar:BVar<T>, toBranch:Branch = .main) {
+        
+        bvar.bind(toBranch) { [weak self] value in
+            self?.value = value
+        }
+        bind(bindTo) { value in
+            bvar.value = value
+        }
+    }
+    /// Just binding is not making difference but bindAndSet need some care cause one is setting the other
+    /// while binding so one must be master other slave
+    public func bBindAndSet( _ branch:Branch, to bvar:BVar<T>, toBranch:Branch = .main) {
+        
+        bvar.bind(toBranch) { [weak self] value in
+            self?.value = value
+        }
+        bindAndSet(branch) { value in
+            bvar.value = value
+        }
+    }
+    
+    
     // MARK: - Init
     /// Initialiser of the dynamic variable
     public init (_ value: T) { self._value = value }
@@ -29,11 +88,19 @@ open class BVar<T:Equatable>{
     }
     /// Unbind the variable
     public func reset(){
+        for (key, _) in listeners{
+            listeners[key] = nil
+        }
+        listeners.removeAll()
+        
         listenerRemote = nil
         listenerLocal = nil
         listenerDB = nil
         listenerExtend = nil
         listenerSlave = nil
+    }
+    public func unbind(_ bindTo:Branch){
+        listeners.removeValue(forKey: bindTo)
     }
     public func unbindDB(){
         listenerDB = nil
@@ -61,6 +128,10 @@ open class BVar<T:Equatable>{
                 listenerExtend?(value)
                 listenerSlave?(value)
                 listenerDB?(value)
+                
+                for (_, listener) in listeners{
+                    listener?(value)
+                }
             }
         }
         get{
