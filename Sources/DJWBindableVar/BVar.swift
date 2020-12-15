@@ -49,10 +49,10 @@ open class BVar<T:Equatable>{
     private var listeners:[Branch:VarHandler?] = [:]
     
     // MARK: -  new with enum
-    public func bind( _ bindTo:Branch, listener: VarHandler? ) {
+    public func bind( _ bindTo:Branch, _ listener: VarHandler? ) {
         listeners[bindTo] = listener
     }
-    public func bindAndSet( _ bindTo:Branch, listener: VarHandler? ) {
+    public func bindAndSet( _ bindTo:Branch, _ listener: VarHandler? ) {
         listeners[bindTo] = listener
         listener?(value)
     }
