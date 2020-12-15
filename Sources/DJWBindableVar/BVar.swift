@@ -116,4 +116,11 @@ open class BVar<T:Equatable>{
         self._value = value
     }
     
+    /// Returns bound branches.
+    public var bondBranches:[Branch]{
+        let desc = listeners.map { key, value -> Branch in
+            return key
+        }
+        return desc
+    }
 }
