@@ -22,18 +22,20 @@ class Tester{
         
     }
 }
+public enum Branch{
+    case main
+    case ui
+    case ui2
+    case db
+    case slave
+}
+
 /// Dynamic Bindable Variable
 open class BVar<T:Equatable>{
     
     public typealias VarHandler    = (T) -> ()
     
-    public enum Branch{
-        case main
-        case ui
-        case ui2
-        case db
-        case slave
-    }
+    
     
     
     
