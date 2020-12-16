@@ -116,6 +116,11 @@ open class BVar<T:Equatable>{
         self._value = value
     }
     
+    /// Re-sending notification
+    public func refresh(_ branch:Branch){
+        guard let listener = listeners[branch] else{return}
+        listener?(value)
+    }
     /// Returns bound branches.
     public var bondBranches:[Branch]{
         let desc = listeners.map { key, value -> Branch in
