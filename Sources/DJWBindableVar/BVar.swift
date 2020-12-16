@@ -100,11 +100,8 @@ open class BVar<T:Equatable>{
     public var value: T {
         set {
             if self._value != newValue {
-                
                 self._value = newValue
-                for (_, listener) in listeners{
-                    listener?(value)
-                }
+                sendNotification()
             }
         }
         get{
@@ -116,16 +113,22 @@ open class BVar<T:Equatable>{
         self._value = value
     }
     
-    /// Re-sending notification
-    public func refresh(_ branch:Branch){
-        guard let listener = listeners[branch] else{return}
-        listener?(value)
+    /// Set without sending any notification
+    public func forceSet(_ value:T){
+        self._value = value
+        sendNotification()
     }
+    
     /// Returns bound branches.
     public var bondBranches:[Branch]{
         let desc = listeners.map { key, value -> Branch in
             return key
         }
         return desc
+    }
+    private func sendNotification(){
+        for (_, listener) in listeners{
+            listener?(_value)
+        }
     }
 }
