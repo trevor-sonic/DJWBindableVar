@@ -30,16 +30,19 @@ class Examples{
     }
 }
 public enum Branch{
-    case master
+    case master, parent
     
     /// ui related bindings
     case ui, ui2, ui3
+    
+    /// audio related bindings
+    case audio, audio2
     
     /// database
     case db
     
     /// to connect other main
-    case slave
+    case slave, child
     
     /// for any other extra needs
     case extra, extra2, extra3
