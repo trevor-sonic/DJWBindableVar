@@ -46,6 +46,9 @@ public enum Branch{
     
     /// for any other extra needs
     case extra, extra2, extra3
+    
+    /// use these for debugging
+    case debug, debug2
 }
 
 /// Dynamic Bindable Variable
@@ -87,16 +90,20 @@ open class BVar<T:Equatable>{
         unbindAll()
     }
     /// Unbind all variables
-    public func unbindAll(){
+    private func unbindAll(){
         for (key, _) in listeners{
             listeners[key] = nil
         }
         listeners.removeAll()
     }
-    public func unbind(_ branch:Branch){
-        listeners[branch] = nil
-        listeners.removeValue(forKey: branch)
-        
+    /// if branch is not defined all branches will be disconnected
+    public func unbind(_ branch:Branch? = nil){
+        if let branch = branch {
+            listeners[branch] = nil
+            listeners.removeValue(forKey: branch)
+        }else{
+            unbindAll()
+        }
     }
     // MARK: - Set
     /// Value of the bond variable.
