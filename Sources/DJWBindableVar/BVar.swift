@@ -60,9 +60,16 @@ open class BVar<T:Equatable>{
 
     private var listeners:[Branch:VarHandler?] = [:]
     
+    #if DEBUG
+    private var connections:[Branch:String?] = [:]
+    #endif
+    
     // MARK: -  New version with enum
-    public func bind( _ branch:Branch, andSet:Bool, _ listener: VarHandler? ) {
+    public func bind( _ branch:Branch, andSet:Bool, _ listener: VarHandler?, callingMethod: String = #function) {
         listeners[branch] = listener
+        #if DEBUG
+        connections[branch] = callingMethod//Thread.callStackSymbols.first?.debugDescription
+        #endif
         if andSet { listener?(value) }
     }
 
@@ -91,16 +98,18 @@ open class BVar<T:Equatable>{
     }
     /// Unbind all variables
     private func unbindAll(){
-        for (key, _) in listeners{
-            listeners[key] = nil
+        for (branch, _) in listeners{
+            unbind(branch)
         }
-        listeners.removeAll()
     }
     /// if branch is not defined all branches will be disconnected
     public func unbind(_ branch:Branch? = nil){
         if let branch = branch {
             listeners[branch] = nil
             listeners.removeValue(forKey: branch)
+            #if DEBUG
+            connections.removeValue(forKey: branch)
+            #endif
         }else{
             unbindAll()
         }
@@ -136,6 +145,15 @@ open class BVar<T:Equatable>{
         }
         return desc
     }
+    #if DEBUG
+    public var bondConnections:[String]{
+        let desc = listeners.compactMap { key, value -> String in
+            return "\(key): \(String(describing: connections[key]! ?? ""))"
+        }
+        return desc
+    }
+    
+    #endif
     private func sendNotification(){
         for (_, listener) in listeners{
             listener?(_value)
